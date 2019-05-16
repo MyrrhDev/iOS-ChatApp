@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.98" systemVersion="18E226" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="IdsChattingUsers" representedClassName="IdsChattingUsers" syncable="YES">
+        <attribute name="userChating" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+    </entity>
+    <entity name="MessageCore" representedClassName="MessageCore" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="dateTime" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="idRoom" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="idUser" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="messageSent" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="time" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userIDReceiver" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="userIDSender" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <relationship name="room" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="RoomCore" inverseName="message" inverseEntity="RoomCore" syncable="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UsersCore" inverseName="message" inverseEntity="UsersCore" syncable="YES"/>
+    </entity>
+    <entity name="RoomCore" representedClassName="RoomCore" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="dateTime" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="human" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="idRoom" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="lastMsgTxt" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="membersCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="time" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="message" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MessageCore" inverseName="room" inverseEntity="MessageCore" syncable="YES"/>
+    </entity>
+    <entity name="UsersCore" representedClassName="UsersCore" syncable="YES">
+        <attribute name="idUser" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="nameForImageView" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="surname" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="message" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MessageCore" inverseName="user" inverseEntity="MessageCore" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="IdsChattingUsers" positionX="-240.26171875" positionY="-668.4765625" width="128" height="60"/>
+        <element name="MessageCore" positionX="-205.796875" positionY="-240.12890625" width="128" height="195"/>
+        <element name="RoomCore" positionX="-422.12109375" positionY="-440.0859375" width="128" height="178"/>
+        <element name="UsersCore" positionX="-48.6875" positionY="-439.9375" width="128" height="118"/>
+    </elements>
+</model>
