@@ -12,7 +12,12 @@ import Alamofire
 class NetworkManager {
     static let sharedNetworkManager = NetworkManager()
     var defaults = UserDefaults()
-    let baseString = "http://zonetactsbackend-pre-env-1.eu-west-1.elasticbeanstalk.com:8081/api/v1.0/users/"
+    
+    let baseURL = "http://zonetactsbackend-pre-env-1.eu-west-1.elasticbeanstalk.com:8081/api/v1.0/interest/list"
+    
+    let postRegistro = "http://zonetactsbackend-pre-env-1.eu-west-1.elasticbeanstalk.com:8081/api/v1.0/postregister/"
+    
+    let usersURL = "http://zonetactsbackend-pre-env-1.eu-west-1.elasticbeanstalk.com:8081/api/v1.0/users/"
     
     let roomURL = "http://zonetactsbackend-pre-env-1.eu-west-1.elasticbeanstalk.com:8081/api/v1.0/rooms/"
     
@@ -34,13 +39,13 @@ class NetworkManager {
     }
     
     func saveToken(myToken: String) {
-        defaults.set(myToken, forKey: "myAuthToken")
+        self.defaults.set(myToken, forKey: "myAuthToken")
     }
     
     func getToken() {
         if(defaults.bool(forKey: "gotToken")) {
             headersHTTP = [
-                "authorization": defaults.string(forKey: "myAuthToken")!,
+                "authorization": self.defaults.string(forKey: "myAuthToken")!,
                 "Accept": "application/json"
             ]
         }

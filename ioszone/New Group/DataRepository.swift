@@ -21,7 +21,7 @@ class DataRepository {
     var defaults = UserDefaults()
     
     func getUsers(completion: @escaping(_ usersArray: [[String:Any]]?, _ error: Error?) -> ()) {
-        Alamofire.request(networkHandler.baseString+"list", headers: networkHandler.headersHTTP).responseJSON { (response) in
+        Alamofire.request(networkHandler.usersURL+"list", headers: networkHandler.headersHTTP).responseJSON { (response) in
             do {
                 let json = response.result.value
                 print("Alamo Users!")
@@ -37,7 +37,7 @@ class DataRepository {
     }
     
     func getRooms(completion: @escaping(_ chatRooms: [[String:Any]]?, _ error: Error?) -> ()) {
-        Alamofire.request(networkHandler.baseString+"me/rooms", headers: networkHandler.headersHTTP).responseJSON { (response) in
+        Alamofire.request(networkHandler.usersURL+"me/rooms", headers: networkHandler.headersHTTP).responseJSON { (response) in
             do {
                 let data = response.data
                 let jsonObject = try JSONSerialization.jsonObject(with: data!, options: [])
@@ -55,7 +55,7 @@ class DataRepository {
     }
     
     func getHumanRooms(completion: @escaping(_ chatRooms: [[String:Any]]?, _ error: Error?) -> ()) {
-        Alamofire.request(networkHandler.baseString+"me/onetoone", headers: networkHandler.headersHTTP).responseJSON { response in
+        Alamofire.request(networkHandler.usersURL+"me/onetoone", headers: networkHandler.headersHTTP).responseJSON { response in
             do {
                 let data = response.data
                 let jsonObject = try JSONSerialization.jsonObject(with: data!, options: [])
@@ -121,7 +121,7 @@ class DataRepository {
         
         for human in fetchedRooms {
             let idUser = String(human.idRoom)
-            Alamofire.request(networkHandler.baseString + idUser + "/getmessages/range=2055-02-17T23:00:00.000Z,150", headers: networkHandler.headersHTTP).responseJSON { response in
+            Alamofire.request(networkHandler.usersURL + idUser + "/getmessages/range=2055-02-17T23:00:00.000Z,150", headers: networkHandler.headersHTTP).responseJSON { response in
                 do {
                     let data = response.data
                     let jsonObject = try JSONSerialization.jsonObject(with: data!, options: [])
@@ -140,7 +140,13 @@ class DataRepository {
     }
     
     func whoAmI() {
-        Alamofire.request(networkHandler.baseString+"me/", headers: networkHandler.headersHTTP).responseJSON { response in
+        print(self.defaults.value(forKey: "myAuthToken"))
+        
+        Alamofire.request(networkHandler.postRegistro+"users/me", headers: networkHandler.headersHTTP).responseJSON { response in
+            print("Request: \(String(describing: response.request))")   // original url request
+            print("Response: \(String(describing: response.response))") // http url response
+            print("Result: \(response.result)")                         // response serialization result
+            
             do {
                 let data = response.data
                 let jsonObject = try JSONSerialization.jsonObject(with: data!, options: [])
@@ -149,11 +155,63 @@ class DataRepository {
                 print("Now I know myself!")
                 self.defaults.set(result?.value(forKey: "idUser"), forKey: "myID")
                 print(self.defaults.integer(forKey: "myID"))
+                
+                self.defaults.set(result, forKey: "thisUserDict")
+                let testDict = self.defaults.value(forKey: "thisUserDict")
+                print(testDict)
             } catch {
                 //let error = NSError(domain: dataErrorDomain, code: DataErrorCode.networkUnavailable.rawValue, userInfo: nil)
                 print("Who Am I?")
                 return
             }
-        }.resume()
+        }
     }
+   
+    
+    
+    func getInterests() {
+        Alamofire.request(networkHandler.postRegistro + "interest/list", method: .get, headers: networkHandler.headersHTTP).responseJSON { response in
+//            print("Request: \(String(describing: response.request))")   // original url request
+//            print("Response: \(String(describing: response.response))") // http url response
+//            print("Result: \(response.result)")                         // response serialization result
+                do {
+                    let data = response.data
+                    let jsonObject = try JSONSerialization.jsonObject(with: data!, options: [])
+                    let jsonDictionary = jsonObject as? [String: Any]
+                    let result = jsonDictionary!["infor"] as? [[String: Any]]
+                    print("Got 'em Interests")
+//                    print(result)
+                    var interestArray = [String]()
+                    if(result != nil) {
+                        for interest in result! {
+                            interestArray.append(interest["name"] as! String)
+//                            print(interest["name"]!)
+                        }
+                    }
+                    self.defaults.set(interestArray, forKey: "InterestArray")
+                } catch {
+                    //let error = NSError(domain: dataErrorDomain, code: DataErrorCode.networkUnavailable.rawValue, userInfo: nil)
+                    
+                    return
+                }
+            }.resume()
+    }
+    
+    func acceptTerms() {
+        Alamofire.request(networkHandler.postRegistro + "users/me/acceptlegaltext", method: .post, headers: networkHandler.headersHTTP)
+    }
+    
+    //el password tiene que ser mandado como un string en sh512, no? tb: el nombre del parametro es password (asumo)
+    func changePassword(newPass: String) {
+        let parameters: Parameters = [
+//            "clientCode": "FGDS2",
+//            "email": txtEmail.text,
+            "password": newPass.sha512()
+        ]
+        Alamofire.request(networkHandler.postRegistro + "users/me/modifypassword", method: .put, parameters: parameters, headers: networkHandler.headersHTTP)
+    }
+    
+    
+
+
 }

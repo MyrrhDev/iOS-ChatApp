@@ -609,12 +609,6 @@ class NewChatRooms: UITableViewController, UISearchBarDelegate {
         }
     }
  
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        
-        
-        return CGFloat.init(100)
-    }
     
 }
 

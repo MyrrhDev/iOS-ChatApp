@@ -133,6 +133,19 @@ class DataProvider { //Sync Coordinator
         }
     }
     
+    func fetchInterests() {
+        repository.getInterests()
+    }
+    
+    func fetchThisUser() {
+        repository.whoAmI()
+    }
+    
+    func dealWithTerms() {
+        repository.acceptTerms()
+    }
+    
+    
     //Sync:
     private func syncHumanMessages(jsonDictionary: [[String:Any]], taskContext: NSManagedObjectContext) -> Bool {
         var successfull = false

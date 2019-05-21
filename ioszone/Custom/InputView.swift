@@ -12,31 +12,14 @@ import ISEmojiView
 
 protocol InputViewDelegate {
     func messageWasSent(message: String)
-    func reloadView()
+    func loadOptions()
 }
 
 
-class InputView: UIView, EmojiViewDelegate {
-    func emojiViewDidSelectEmoji(_ emoji: String, emojiView: EmojiView) {
-        inputTextField.insertText(emoji)
-    }
-    
-    func emojiViewDidPressDeleteBackwardButton(_ emojiView: EmojiView) {
-        inputTextField.deleteBackward()
-    }
-    
-    var emojiView: EmojiView! {
-        didSet {
-            emojiView.delegate = self
-        }
-    }
-    
+class InputView: UIView {
     static let inputView = InputView()
     var delegate: InputViewDelegate?
     
-    var bottomType: BottomType!
-    //var emojis: [EmojiCategory]?
-   
     let inputTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "Enter message..."
@@ -57,40 +40,12 @@ class InputView: UIView, EmojiViewDelegate {
         let button = UIButton(type: .system)
         button.tintColor = .gray
         button.setImage(#imageLiteral(resourceName: "new_chat_icon").withRenderingMode(.alwaysTemplate), for: .normal)
-        button.addTarget(self, action: #selector(handleEmojis), for: .touchUpInside)
+        button.addTarget(self, action: #selector(chooseOptions), for: .touchUpInside)
         return button
     }()
     
-    @objc func handleEmojis() {
-        let keyboardSettings = KeyboardSettings(bottomType: .categories)
-        //keyboardSettings.customEmojis = emojis
-        keyboardSettings.countOfRecentsEmojis = 20
-        //keyboardSettings.afterScreenUpdates = true
-        let emojiView = EmojiView(keyboardSettings: keyboardSettings)
-        emojiView.translatesAutoresizingMaskIntoConstraints = false
-        emojiView.delegate = self
-        
-        if (!inputTextField.isFirstResponder) {
-            inputTextField.inputView = emojiView
-            inputTextField.becomeFirstResponder()
-            print("1")
-        } else {
-            inputTextField.resignFirstResponder()
-            if(inputTextField.inputView != nil) {
-                inputTextField.inputView = nil
-                inputTextField.becomeFirstResponder()
-                delegate?.reloadView()
-                //inputTextField.reloadInputViews()
-                print("2")
-            } else {
-                inputTextField.resignFirstResponder()
-                inputTextField.inputView = emojiView
-                inputTextField.becomeFirstResponder()
-                //inputTextField.reloadInputViews()
-                delegate?.reloadView()
-                print("3")
-            }
-        }
+    @objc func chooseOptions() {
+        delegate?.loadOptions()
     }
     
     @objc func sendInfo() {

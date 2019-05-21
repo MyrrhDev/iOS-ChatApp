@@ -13,12 +13,7 @@ import Starscream
 import CoreData
 
 class LoginController: UIViewController {
-    var dataProvider: DataProvider = {
-        let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        let managedContext = appDelegate?.persistentContainer
-        var dataProv = DataProvider(persistentContainer: managedContext!, repository: DataRepository.shared)
-        return dataProv
-    }()
+    var dataProvider: DataProvider?
     
     let loginInputContainerView: UIView = {
         let view = UIView()
@@ -131,40 +126,22 @@ class LoginController: UIViewController {
     
     @objc func handleLogin() {
         let parameters: Parameters = [
-            "nameClient": txtClient.text,
+            "clientCode": "FGDS2",
             "email": txtEmail.text,
             "password": txtPass.text!.sha512()
         ]
         
-        Alamofire.request(networkHandler.baseString+"loginuser", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: networkHandler.headerJSON).responseJSON { response in
+        Alamofire.request(networkHandler.usersURL+"loginuser", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: networkHandler.headerJSON).responseJSON { response in
             //print("Request: \(String(describing: response.request))")   // original url request
             //print("Response: \(String(describing: response.response))") // http url response
             //print("Result: \(response.result)")                         // response serialization result
             if let json = response.result.value {
                 if let dictionary = json as? [String: Any] {
                     if let token = dictionary["authToken"] as? String {
-                        //print("Tokn!! \(token)")
+                        print("Tokn!! \(token)")
                         self.networkHandler.saveToken(myToken: token)
+                        print(self.defaults.value(forKey: "myAuthToken"))
                         self.defaults.set(true, forKey: "gotToken")
-                        
-//                        self.dataProvider.fetchRooms { (error) in
-//                            print(error)
-//                        }
-//                        self.dataProvider.fetchUsers { (error) in
-//                            print(error)
-//                        }
-//                        self.dataProvider.fetchUsersChatting { (error) in
-//                            print(error)
-//                        }
-//                        self.dataProvider.fetchRoomMessages { (error) in
-//                            print(error)
-//                        }
-//                        self.dataProvider.fetchHumanMessages { (error) in
-//                            print(error)
-//                        }
-                        
-                        
-                        
                         self.authIsVerified()
                     } else {
                         do {
@@ -193,7 +170,21 @@ class LoginController: UIViewController {
     }
    
     func authIsVerified() {
-        self.show(CustomTabBarController(), sender: nil)
+        let appDelegate = UIApplication.shared.delegate as? AppDelegate
+        let managedContext = appDelegate?.persistentContainer
+        dataProvider = DataProvider(persistentContainer: managedContext!, repository: DataRepository.shared)
+        
+        //dataProvider!.fetchThisUser()
+        //let controller = RegisterView()
+        //controller.userDict = String
+//        while(self.defaults.object(forKey: "thisUserDict") == nil) {
+//            print("waiting")
+//        }
+//        if(self.defaults.object(forKey: "thisUserDict") != nil) {
+//            self.show(RegisterView(), sender: nil)
+//        }
+        self.show(RegisterView(), sender: nil)
+        //self.show(CustomTabBarController(), sender: nil)
         print("success!!")
     }
 }

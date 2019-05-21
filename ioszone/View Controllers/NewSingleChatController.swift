@@ -12,6 +12,29 @@ import UIKit
 import CoreData
 
 class NewSingleChatController: UIViewController, UITableViewDelegate,  UITableViewDataSource, InputViewDelegate {
+    func loadOptions() {
+        let options = UIAlertController(title: nil,
+                                        message: nil,
+                                        preferredStyle: .actionSheet)
+        
+        options.addAction(UIAlertAction(title: "Take Photo or Video", style: .default, handler: { (_) in
+            print("User click Take Photo or Video")
+        }))
+        options.addAction(UIAlertAction(title: "Photo/Video Library", style: .default, handler: { (_) in
+            print("User click Photo/Video Library")
+        }))
+        options.addAction(UIAlertAction(title: "Share Location", style: .default, handler: { (_) in
+            print("User click Share Location")
+        }))
+        options.addAction(UIAlertAction(title: "Share Contact", style: .default, handler: { (_) in
+            print("User click Share Contact")
+        }))
+        options.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: { (_) in
+            print("User click Dismiss button")
+        }))
+        self.present(options, animated: true)
+    }
+    
     
     func reloadView() {
         emoticonKeyboard = true
