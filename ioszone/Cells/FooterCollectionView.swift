@@ -30,17 +30,12 @@ class FooterCollectionView: UICollectionReusableView {
     }()
     
     @objc func continueToHelp() {
-        //save interests somewhere
-        
-        //segue to next view
         delegate?.continueToHelpView()
     }
     
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-//        self.backgroundColor = .blue
-        
         myCustomInit()
     }
     
@@ -51,7 +46,7 @@ class FooterCollectionView: UICollectionReusableView {
     func myCustomInit() {
         addSubview(continueButton)
         addConstraintsWithFormat(format: "H:|-60-[v0(200)]", views: continueButton)
-        addConstraintsWithFormat(format: "V:|[v0(20)]", views: continueButton)
+        addConstraintsWithFormat(format: "V:|[v0]", views: continueButton)
         print("hello there from FooterCollectionView")
     }
     

@@ -142,6 +142,9 @@ class LoginController: UIViewController {
                         self.networkHandler.saveToken(myToken: token)
                         print(self.defaults.value(forKey: "myAuthToken"))
                         self.defaults.set(true, forKey: "gotToken")
+                        self.defaults.set(self.txtPass.text!.sha512(), forKey: "myPW")
+                        self.defaults.set(self.txtEmail.text, forKey: "myEmail")
+                        
                         self.authIsVerified()
                     } else {
                         do {
@@ -173,16 +176,7 @@ class LoginController: UIViewController {
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         let managedContext = appDelegate?.persistentContainer
         dataProvider = DataProvider(persistentContainer: managedContext!, repository: DataRepository.shared)
-        
-        //dataProvider!.fetchThisUser()
-        //let controller = RegisterView()
-        //controller.userDict = String
-//        while(self.defaults.object(forKey: "thisUserDict") == nil) {
-//            print("waiting")
-//        }
-//        if(self.defaults.object(forKey: "thisUserDict") != nil) {
-//            self.show(RegisterView(), sender: nil)
-//        }
+       
         self.show(RegisterView(), sender: nil)
         //self.show(CustomTabBarController(), sender: nil)
         print("success!!")

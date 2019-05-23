@@ -169,7 +169,7 @@ class DataRepository {
    
     
     
-    func getInterests() {
+    func getClientInterests() {
         Alamofire.request(networkHandler.postRegistro + "interest/list", method: .get, headers: networkHandler.headersHTTP).responseJSON { response in
 //            print("Request: \(String(describing: response.request))")   // original url request
 //            print("Response: \(String(describing: response.response))") // http url response
@@ -183,6 +183,8 @@ class DataRepository {
 //                    print(result)
                     var interestArray = [String]()
                     if(result != nil) {
+                        self.defaults.set(result, forKey: "interestsClientDict")
+                        
                         for interest in result! {
                             interestArray.append(interest["name"] as! String)
 //                            print(interest["name"]!)
@@ -191,10 +193,47 @@ class DataRepository {
                     self.defaults.set(interestArray, forKey: "InterestArray")
                 } catch {
                     //let error = NSError(domain: dataErrorDomain, code: DataErrorCode.networkUnavailable.rawValue, userInfo: nil)
-                    
                     return
                 }
             }.resume()
+    }
+    
+    
+    func getUserInterests() {
+        Alamofire.request(networkHandler.postRegistro + "users/me/interest", method: .get, headers: networkHandler.headersHTTP).responseJSON { response in
+            do {
+                let data = response.data
+                let jsonObject = try JSONSerialization.jsonObject(with: data!, options: [])
+                let jsonDictionary = jsonObject as? [String: Any]
+                let result = jsonDictionary!["infor"] as? [[String: Any]]
+                print("Got 'em Interests")
+                //                    print(result)
+                var interestArray = [String]()
+                if(result != nil) {
+                    self.defaults.set(result, forKey: "userInterestsDict")
+                    
+                    for interest in result! {
+                        interestArray.append(interest["name"] as! String)
+                        //                            print(interest["name"]!)
+                    }
+                }
+                self.defaults.set(interestArray, forKey: "InterestArray")
+            } catch {
+                //let error = NSError(domain: dataErrorDomain, code: DataErrorCode.networkUnavailable.rawValue, userInfo: nil)
+                
+                return
+            }
+            }.resume()
+    }
+    
+    
+    func saveInterests (interests: [Int]) {
+        let parameters: Parameters = [
+            "interests": interests
+        ]
+        
+         Alamofire.request(networkHandler.postRegistro + "users/me/interest", method: .put, parameters: parameters, headers: networkHandler.headersHTTP)
+        
     }
     
     func acceptTerms() {
@@ -204,14 +243,46 @@ class DataRepository {
     //el password tiene que ser mandado como un string en sh512, no? tb: el nombre del parametro es password (asumo)
     func changePassword(newPass: String) {
         let parameters: Parameters = [
-//            "clientCode": "FGDS2",
-//            "email": txtEmail.text,
-            "password": newPass.sha512()
+            "actualPassword": self.defaults.value(forKey: "myPW")!,
+            "newPassword": newPass.sha512()
         ]
         Alamofire.request(networkHandler.postRegistro + "users/me/modifypassword", method: .put, parameters: parameters, headers: networkHandler.headersHTTP)
     }
     
+    func updateUserData(name: String, surname: String, email: String) {
+        let parameters: Parameters = [
+            "name": name,
+            "surname": surname,
+            "email": email
+        ]
+        
+        Alamofire.request(networkHandler.postRegistro + "users/me", method: .put, parameters: parameters, headers: networkHandler.headersHTTP)
+    }
+
+    func getNewToken() {
+        let parameters: Parameters = [
+            "clientCode": "FGDS2",
+            "email": self.defaults.value(forKey: "myEmail")!,
+            "password": (self.defaults.value(forKey: "myNewPW") as! String)
+        ]
+        
+        Alamofire.request(networkHandler.usersURL+"loginuser", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: networkHandler.headerJSON).responseJSON { response in
+            print("Request: \(String(describing: response.request))")   // original url request
+            print("Response: \(String(describing: response.response))") // http url response
+            print("Result: \(response.result)")                         // response serialization result
+            if let json = response.result.value {
+                if let dictionary = json as? [String: Any] {
+                    if let token = dictionary["authToken"] as? String {
+                        print("Tokn!! \(token)")
+                        self.networkHandler.saveToken(myToken: token)
+                        print(self.defaults.value(forKey: "myAuthToken"))
+                        self.defaults.set(true, forKey: "gotSecondToken")
+                    }
+                } else {
+                    print("Error getting authToken!")
+                }
+            }
+        }
+    }
     
-
-
 }

@@ -134,7 +134,12 @@ class DataProvider { //Sync Coordinator
     }
     
     func fetchInterests() {
-        repository.getInterests()
+        repository.getClientInterests()
+        repository.getUserInterests()
+    }
+    
+    func changeInterests(interests: [Int]) {
+        repository.saveInterests(interests: interests)
     }
     
     func fetchThisUser() {
@@ -145,6 +150,21 @@ class DataProvider { //Sync Coordinator
         repository.acceptTerms()
     }
     
+    func changePassword(newPass: String) {
+        repository.changePassword(newPass: newPass)
+    }
+    
+    func changeUserInfo(name: String, surname: String, email: String) {
+        repository.updateUserData(name: name,surname: surname,email: email)
+    }
+    
+    func changeUserInterests(interests: [Int]) {
+        repository.saveInterests(interests:interests)
+    }
+    
+    func getNewToken() {
+        repository.getNewToken()
+    }
     
     //Sync:
     private func syncHumanMessages(jsonDictionary: [[String:Any]], taskContext: NSManagedObjectContext) -> Bool {

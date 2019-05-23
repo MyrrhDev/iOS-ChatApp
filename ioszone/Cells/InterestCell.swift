@@ -54,4 +54,42 @@ class InterestCell: UICollectionViewCell {
         //interestPicture.backgroundColor = .red
     }
     
+    
+    
+    /// same with UITableViewCell's selected backgroundColor
+    private let highlightedColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
+    
+   
+        
+        var shouldTintBackgroundWhenSelected = true // You can change default value
+        var specialHighlightedArea: UIView?
+        
+        // make lightgray background show immediately
+        override var isHighlighted: Bool {
+            willSet {
+                onSelected(newValue)
+            }
+        }
+        // keep lightGray background until unselected
+        override var isSelected: Bool {
+            willSet {
+                onSelected(newValue)
+            }
+        }
+        func onSelected(_ newValue: Bool) {
+            guard selectedBackgroundView == nil else { return }
+            if shouldTintBackgroundWhenSelected {
+                contentView.backgroundColor = newValue ? highlightedColor : UIColor.clear
+            }
+//            if let sa = specialHighlightedArea {
+//                sa.backgroundColor = newValue ? UIColor.black.withAlphaComponent(0.4) : UIColor.clear
+//            }
+        }
+}
+
+
+extension UIColor {
+    convenience init(rgb: Int, alpha: CGFloat = 1.0) {
+        self.init(red: CGFloat((rgb & 0xFF0000) >> 16) / 255.0, green: CGFloat((rgb & 0xFF00) >> 8) / 255.0, blue: CGFloat(rgb & 0xFF) / 255.0, alpha: alpha)
+    }
 }

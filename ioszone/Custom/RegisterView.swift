@@ -70,6 +70,16 @@ class RegisterView: UIViewController {
         return textField
     }()
     
+    let userDOB: LeftPaddedTextField = {
+        let textField = LeftPaddedTextField()
+        textField.placeholder = "Date of birth"
+        //textField.text = "rodolfo@gmail.com"
+        textField.layer.borderColor = UIColor.lightGray.cgColor
+        textField.layer.borderWidth = 1
+        textField.keyboardType = .emailAddress
+        return textField
+    }()
+    
     let userPasswordPre: LeftPaddedTextField = {
         let textField = LeftPaddedTextField()
         textField.placeholder = "Enter password"
@@ -113,25 +123,72 @@ class RegisterView: UIViewController {
         return button
     }()
     
-    //TODO: Crear forma de aceptar legaltext para que me den el nuevo token para poder acceder a intereses y demas
+    
     
     @objc func continueToInterests() {
-        //Save user info to myself
-//        dataProvider.fetchUsers { (error) in
-//            print(error)
-//        }
+        if (passwordChecked() && emailChecked()) {
+            self.defaults.set(self.userPasswordPre.text!.sha512(), forKey: "myNewPW")
+            print(self.defaults.value(forKey: "myNewPW") as! String)
+            
+            //Save user info to API
+            dataProvider.changePassword(newPass: userPasswordPre.text!)
+            dataProvider.changeUserInfo(name: userName.text!, surname: userLastName.text!, email: userEmail.text!)
+            //Interests:
         
-        //Save user info to API
-        dataProvider.fetchInterests()
-        //Asks for interests
-        
-        //segue to Interests
-        let layout = UICollectionViewFlowLayout()
-        layout.sectionFootersPinToVisibleBounds = true
-        let controller = IntestsView(collectionViewLayout: layout)
-        self.navigationController?.isNavigationBarHidden = true
-        self.show(controller, sender: nil)
-        
+            dataProvider.fetchInterests()
+            
+            //Asks for interests
+            
+            //segue to Interests
+            let layout = UICollectionViewFlowLayout()
+            layout.sectionFootersPinToVisibleBounds = true
+            let controller = IntestsView(collectionViewLayout: layout)
+            self.navigationController?.isNavigationBarHidden = true
+            self.show(controller, sender: nil)
+        }
+    }
+    
+    func passwordChecked() -> Bool {
+        if((!userPasswordPre.text!.isEmpty) && (!userPasswordPost.text!.isEmpty)) {
+            if (userPasswordPre.text == userPasswordPost.text) {
+                return true
+            } else {
+                let alert = UIAlertController(title: "Las contraseñas no son iguales",
+                                              message: "Please try again",
+                                              preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: "Try Again",
+                                                 style: .cancel)
+                alert.addAction(cancelAction)
+                self.present(alert, animated: true)
+            }
+        } else {
+            let alert = UIAlertController(title: "No has introducido una nueva contraseña",
+                                          message: "Please try again",
+                                          preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Try Again",
+                                             style: .cancel)
+            alert.addAction(cancelAction)
+            self.present(alert, animated: true)
+        }
+        return false
+    }
+    
+    //TODO: se puede customize dependiendo de que restriccion de email se quiere hacer
+    //termina en .com
+    func emailChecked() -> Bool {
+        //tiene @
+        if((userEmail.text?.contains("@"))! && ((userEmail.text?.hasSuffix(".com"))!)) {
+            return true
+        } else {
+                let alert = UIAlertController(title: "El email no tiene el formato correcto",
+                                              message: "Please try again",
+                                              preferredStyle: .alert)
+                let cancelAction = UIAlertAction(title: "Try Again",
+                                                 style: .cancel)
+                alert.addAction(cancelAction)
+                self.present(alert, animated: true)
+        }
+        return false
     }
     
     
