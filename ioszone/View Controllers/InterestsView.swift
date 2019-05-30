@@ -10,18 +10,14 @@ import UIKit
 import InitialsImageView
 
 class IntestsView: UICollectionViewController, UICollectionViewDelegateFlowLayout, FooterCollectionViewDelegate {
-    func continueToHelpView() {
+    func continueToChats() {
         print("delegate works")
-        
+        defaults.set(true, forKey: "gotToken15")
         dataProvider.changeInterests(interests: arrayToSend)
         dataProvider.dealWithTerms()
         
         dataProvider.getNewToken()
         
-//        let layout = UICollectionViewFlowLayout()
-//        let controller = IntestsView(collectionViewLayout: layout)
-//        self.navigationController?.isNavigationBarHidden = true
-//        self.show(controller, sender: nil)
         self.show(CustomTabBarController(), sender: nil)
         print("success to Chats!!")
     }
@@ -39,7 +35,6 @@ class IntestsView: UICollectionViewController, UICollectionViewDelegateFlowLayou
     private let footerId = "footerId"
     
     var defaults = UserDefaults()
-    //var interestNames = [String]()
     var selectedInterests = [String]()
     
     var interestsClient: [[String:Any]]?
@@ -47,6 +42,7 @@ class IntestsView: UICollectionViewController, UICollectionViewDelegateFlowLayou
     var interestNames = ["Deportist", "Bowling","Montaña","Playa","Buceo"]
     var arrayToSend = [Int]()
     
+    var allIndex = [IndexPath]()
     
     func loadInterests() {
         interestsClient = self.defaults.value(forKey: "interestsClientDict") as! [[String : Any]]
@@ -68,25 +64,43 @@ class IntestsView: UICollectionViewController, UICollectionViewDelegateFlowLayou
         collectionView.register(HeaderCollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
         collectionView.register(FooterCollectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: footerId)
         collectionView.register(InterestCell.self, forCellWithReuseIdentifier: cellId)
-//        let indexPathForFirstRow = IndexPath(row: 0, section: 0)
-//        self.collectionView?.selectItem(at: indexPathForFirstRow, animated: true, scrollPosition: .top)
         loadInterests()
         collectionView.reloadData()
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //print(interestsClient![indexPath.item]["idInterest"])
-        arrayToSend.append(interestsClient![indexPath.item]["idInterest"] as! Int)
-        //print(arrayToSent)
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         if let index = arrayToSend.index(of: interestsClient![indexPath.item]["idInterest"] as! Int) {
             arrayToSend.remove(at: index)
         }
-       // print(arrayToSent)
+
+        if !(arrayToSend.contains(interestsClient![indexPath.item]["idInterest"] as! Int)) {
+            arrayToSend.append(interestsClient![indexPath.item]["idInterest"] as! Int)
+        }
+
+        if !(allIndex.contains(indexPath)) {
+            allIndex.append(indexPath)
+            collectionView.reloadItems(at: [indexPath])
+        }
+        print(arrayToSend)
+        print(allIndex)
     }
     
+    override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+
+        if let index = arrayToSend.index(of: interestsClient![indexPath.item]["idInterest"] as! Int) {
+            arrayToSend.remove(at: index)
+        }
+
+        if (allIndex.contains(indexPath)) {
+            let index = allIndex.index(of: indexPath)!
+            allIndex.remove(at: index)
+            collectionView.reloadItems(at: [indexPath])
+        }
+
+        print(arrayToSend)
+        print(allIndex)
+
+    }
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -95,21 +109,22 @@ class IntestsView: UICollectionViewController, UICollectionViewDelegateFlowLayou
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         print(self.interestsClient!.count)
         return self.interestsClient!.count
+       //return 0
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! InterestCell
 
-        if(indexPath.item == 0){
-            collectionView.selectItem(at: indexPath, animated: false, scrollPosition: UICollectionView.ScrollPosition.centeredHorizontally)
-            
+
+        if allIndex.contains(indexPath) {
+            cell.interestPicture.frame = CGRect(x: 8, y: 0, width: 50, height: 50)
+            cell.interestPicture.setImageForName(interestsClient![indexPath.item]["name"] as! String, backgroundColor: .red, circular: true, textAttributes: nil)
+            cell.interestName.text = interestsClient![indexPath.item]["name"] as! String
+        } else {
+            cell.interestPicture.frame = CGRect(x: 8, y: 0, width: 50, height: 50)
+            cell.interestPicture.setImageForName(interestsClient![indexPath.item]["name"] as! String, backgroundColor: .lightGray, circular: true, textAttributes: nil)
+            cell.interestName.text = interestsClient![indexPath.item]["name"] as! String
         }
-        cell.interestPicture.frame = CGRect(x: 8, y: 0, width: 50, height: 50)
-        cell.interestPicture.setImageForName(interestsClient![indexPath.item]["name"] as! String, circular: true, textAttributes: nil)
-//        cell.interestName.frame = CGRect(x: 0, y: 0, width: 30, height: 15)
-        cell.interestName.text = interestsClient![indexPath.item]["name"] as! String
-            
-        
         return cell
     }
     

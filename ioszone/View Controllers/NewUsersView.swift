@@ -213,13 +213,19 @@ class NewUsersView: UIViewController, UITableViewDelegate, UITableViewDataSource
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let userRoom = fetchedResultsController.object(at: indexPath)
+        var userRoom: UsersCore
+        if(isFiltering()){
+            userRoom = usersFiltered[indexPath.row]
+            
+        } else {
+           userRoom = fetchedResultsController.object(at: indexPath)
+        }
         
         let controller = NewSingleChatController()
         controller.groupName = userRoom.name
         controller.userID = Int(userRoom.idUser)//to fetch CoreData
         navigationController?.pushViewController(controller, animated: true)
-       
+        
     }
     
     

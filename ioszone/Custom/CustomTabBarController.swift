@@ -19,7 +19,7 @@ class CustomTabBarController: UITabBarController {
         navigationController.title = "Chats"
         navigationController.tabBarItem.image = UIImage(named: "Chats")
         
-        let configurationController = UIViewController()
+        let configurationController = ConfigurationView()
         let secondNavigationController = UINavigationController(rootViewController: configurationController)
         secondNavigationController.title = "Configuration"
         secondNavigationController.tabBarItem.image = UIImage(named: "config")

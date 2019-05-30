@@ -10,7 +10,7 @@
 import UIKit
 
 protocol FooterCollectionViewDelegate {
-    func continueToHelpView()
+    func continueToChats()
 }
 
 
@@ -25,12 +25,12 @@ class FooterCollectionView: UICollectionReusableView {
         let titleColor = UIColor(red: 0, green: 137/255, blue: 249/255, alpha: 1)
         button.setTitleColor(titleColor, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
-        button.addTarget(self, action: #selector(continueToHelp), for: .touchUpInside)
+        button.addTarget(self, action: #selector(continueToChatView), for: .touchUpInside)
         return button
     }()
     
-    @objc func continueToHelp() {
-        delegate?.continueToHelpView()
+    @objc func continueToChatView() {
+        delegate?.continueToChats()
     }
     
     

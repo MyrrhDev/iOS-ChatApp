@@ -179,8 +179,8 @@ class DataRepository {
                     let jsonObject = try JSONSerialization.jsonObject(with: data!, options: [])
                     let jsonDictionary = jsonObject as? [String: Any]
                     let result = jsonDictionary!["infor"] as? [[String: Any]]
-                    print("Got 'em Interests")
-//                    print(result)
+                    print("Got 'em Client Interests")
+                    print(result)
                     var interestArray = [String]()
                     if(result != nil) {
                         self.defaults.set(result, forKey: "interestsClientDict")
@@ -207,7 +207,7 @@ class DataRepository {
                 let jsonDictionary = jsonObject as? [String: Any]
                 let result = jsonDictionary!["infor"] as? [[String: Any]]
                 print("Got 'em Interests")
-                //                    print(result)
+                print(result)
                 var interestArray = [String]()
                 if(result != nil) {
                     self.defaults.set(result, forKey: "userInterestsDict")
@@ -277,6 +277,7 @@ class DataRepository {
                         self.networkHandler.saveToken(myToken: token)
                         print(self.defaults.value(forKey: "myAuthToken"))
                         self.defaults.set(true, forKey: "gotSecondToken")
+                        self.defaults.set(false, forKey: "gotToken9")
                     }
                 } else {
                     print("Error getting authToken!")

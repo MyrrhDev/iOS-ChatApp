@@ -13,8 +13,8 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-
+    var defaults = UserDefaults()
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.makeKeyAndVisible()
@@ -22,15 +22,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UISearchBar.appearance().tintColor = .white
 
         //if User is logged in
-        //window?.rootViewController = CustomTabBarController()
+        if(isKeyPresentInUserDefaults(key: "gotToken15")) {
+            if(defaults.value(forKey: "gotToken") as! Bool == true) {
+                print(defaults.value(forKey: "gotToken")as! Bool)
+                window?.rootViewController = CustomTabBarController()
+            } else if (defaults.value(forKey: "gotToken")as! Bool == false){
+                print("no token?!")
+                print(defaults.value(forKey: "gotToken") as! Bool)
+                window?.rootViewController = LoginController()
+            }
+        } else {
         //else we go to login
-        window?.rootViewController = LoginController()
+            print("no token 13")
+            window?.rootViewController = LoginController()
+        }
+        //window?.rootViewController = LoginController()
         //window?.rootViewController?.present(LoginController(), animated: false, completion: nil)
         UINavigationBar.appearance().barTintColor = UIColor.red
         UINavigationBar.appearance().tintColor = UIColor.white
         //UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.foregroundColor.rawValue):UIColor.white]
         //application.statusBarStyle = .lightContent
+        
         print("Documents Directory: ", FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last ?? "Not Found!")
         return true
     }
@@ -44,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         
-//        StarWebSocket.sharedInstance.closeConnection()
+        //StarWebSocket.sharedInstance.closeConnection()
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -53,7 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-//        StarWebSocket.sharedInstance.establishConnection()
+        //StarWebSocket.sharedInstance.establishConnection()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -62,6 +75,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.saveContext()
     }
 
+    func isKeyPresentInUserDefaults(key: String) -> Bool {
+        return UserDefaults.standard.object(forKey: key) != nil
+    }
+    
     // MARK: - Core Data stack
 
     lazy var persistentContainer: NSPersistentContainer = {

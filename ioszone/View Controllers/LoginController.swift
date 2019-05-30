@@ -14,19 +14,15 @@ import CoreData
 
 class LoginController: UIViewController {
     var dataProvider: DataProvider?
+    let networkHandler = NetworkManager.sharedNetworkManager
+    var defaults = UserDefaults()
+    
     
     let loginInputContainerView: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.white
         return view
     }()
-    
-    /*
-    let logoImageView: UIImageView = {
-        let image = UIImage(named: "logo")
-        let imageView = UIImageView(image: image)
-        return imageView
-    }()*/
     
     let txtClient: LeftPaddedTextField = {
         let textField = LeftPaddedTextField()
@@ -82,11 +78,16 @@ class LoginController: UIViewController {
         loginInputContainerView.addConstraintsWithFormat(format: "H:|-60-[v0(200)]-60-|", views: logbutton)
     }
     
-    let networkHandler = NetworkManager.sharedNetworkManager
-    var defaults = UserDefaults()
+    func isKeyPresentInUserDefaults(key: String) -> Bool {
+        return UserDefaults.standard.object(forKey: key) != nil
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //if(!isKeyPresentInUserDefaults(key: "gotToken11")) {
+        //defaults.set(false, forKey: "gotToken")
+        //}
+        
         view.addSubview(loginInputContainerView)
         view.addConstraintsWithFormat(format: "H:|[v0]|", views: loginInputContainerView)
         view.addConstraintsWithFormat(format: "V:|[v0]|", views: loginInputContainerView)
@@ -95,8 +96,7 @@ class LoginController: UIViewController {
 
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(keyboardHide))
         view.addGestureRecognizer(tap)
-
-        defaults.set(false, forKey: "gotToken")
+        
     }
     
     fileprivate func observeKeyboardNotifications() {
@@ -125,48 +125,57 @@ class LoginController: UIViewController {
     }
     
     @objc func handleLogin() {
-        let parameters: Parameters = [
-            "clientCode": "FGDS2",
-            "email": txtEmail.text,
-            "password": txtPass.text!.sha512()
-        ]
-        
-        Alamofire.request(networkHandler.usersURL+"loginuser", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: networkHandler.headerJSON).responseJSON { response in
-            //print("Request: \(String(describing: response.request))")   // original url request
-            //print("Response: \(String(describing: response.response))") // http url response
-            //print("Result: \(response.result)")                         // response serialization result
-            if let json = response.result.value {
-                if let dictionary = json as? [String: Any] {
-                    if let token = dictionary["authToken"] as? String {
-                        print("Tokn!! \(token)")
-                        self.networkHandler.saveToken(myToken: token)
-                        print(self.defaults.value(forKey: "myAuthToken"))
-                        self.defaults.set(true, forKey: "gotToken")
-                        self.defaults.set(self.txtPass.text!.sha512(), forKey: "myPW")
-                        self.defaults.set(self.txtEmail.text, forKey: "myEmail")
-                        
-                        self.authIsVerified()
-                    } else {
-                        do {
-                            let data = response.data
-                            let jsonObject = try JSONSerialization.jsonObject(with: data!, options: [])
-                            let jsonDictionary = jsonObject as? [String: Any]
-                            let result = jsonDictionary!["error"] as? [String: Any]
-                            let errorType = result!["detail"] as? [String: Any]
+        if(isKeyPresentInUserDefaults(key: "gotToken15")) {
+            if(defaults.value(forKey: "gotToken15") as! Bool == true) {
+                //self.show(NewChatRooms(), sender: nil)
+                self.show(CustomTabBarController(), sender: nil)
+                print("success chat rooms!!")
+                
+            }
+        } else {
+           let parameters: Parameters = [
+                "clientCode": "FGDS2",
+                "email": txtEmail.text,
+                "password": txtPass.text!.sha512()
+            ]
+            
+            Alamofire.request(networkHandler.usersURL+"loginuser", method: .post, parameters: parameters, encoding: JSONEncoding.default, headers: networkHandler.headerJSON).responseJSON { response in
+                //print("Request: \(String(describing: response.request))")   // original url request
+                //print("Response: \(String(describing: response.response))") // http url response
+                //print("Result: \(response.result)")                         // response serialization result
+                if let json = response.result.value {
+                    if let dictionary = json as? [String: Any] {
+                        if let token = dictionary["authToken"] as? String {
+                            print("Tokn!! \(token)")
+                            self.networkHandler.saveToken(myToken: token)
+                            print(self.defaults.value(forKey: "myAuthToken"))
+                            self.defaults.set(true, forKey: "gotToken")
+                            self.defaults.set(self.txtPass.text!.sha512(), forKey: "myPW")
+                            self.defaults.set(self.txtEmail.text, forKey: "myEmail")
                             
-                            let alert = UIAlertController(title: errorType!["en"] as! String,
-                                                          message: "Please try again",
-                                                          preferredStyle: .alert)
-                            let cancelAction = UIAlertAction(title: "Try Again",
-                                                             style: .cancel)
-                            alert.addAction(cancelAction)
-                            self.present(alert, animated: true)
-                        } catch {
-                            
+                            self.authIsVerified()
+                        } else {
+                            do {
+                                let data = response.data
+                                let jsonObject = try JSONSerialization.jsonObject(with: data!, options: [])
+                                let jsonDictionary = jsonObject as? [String: Any]
+                                let result = jsonDictionary!["error"] as? [String: Any]
+                                let errorType = result!["detail"] as? [String: Any]
+                                
+                                let alert = UIAlertController(title: errorType!["en"] as! String,
+                                                              message: "Please try again",
+                                                              preferredStyle: .alert)
+                                let cancelAction = UIAlertAction(title: "Try Again",
+                                                                 style: .cancel)
+                                alert.addAction(cancelAction)
+                                self.present(alert, animated: true)
+                            } catch {
+                                
+                            }
                         }
+                    } else {
+                        print("Error getting authToken!")
                     }
-                } else {
-                    print("Error getting authToken!")
                 }
             }
         }
@@ -176,7 +185,7 @@ class LoginController: UIViewController {
         let appDelegate = UIApplication.shared.delegate as? AppDelegate
         let managedContext = appDelegate?.persistentContainer
         dataProvider = DataProvider(persistentContainer: managedContext!, repository: DataRepository.shared)
-       
+        //dataProvider?.fetchThisUser()
         self.show(RegisterView(), sender: nil)
         //self.show(CustomTabBarController(), sender: nil)
         print("success!!")

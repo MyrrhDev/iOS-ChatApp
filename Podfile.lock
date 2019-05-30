@@ -1,7 +1,7 @@
 PODS:
-  - Alamofire (4.8.1)
+  - Alamofire (4.8.2)
   - InitialsImageView (0.5.0)
-  - ISEmojiView (0.1.2)
+  - ISEmojiView (0.2.2)
   - Socket.IO-Client-Swift (14.0.0):
     - Starscream (~> 3.0.6)
   - Starscream (3.0.6)
@@ -22,9 +22,9 @@ SPEC REPOS:
     - Starscream
 
 SPEC CHECKSUMS:
-  Alamofire: 16ce2c353fb72865124ddae8a57c5942388f4f11
+  Alamofire: ae5c501addb7afdbb13687d7f2f722c78734c2d3
   InitialsImageView: ab9ea8cbf9874231201ad097209ea9b46a61d8a7
-  ISEmojiView: 5b53bdf057ddf484b92e70064a1cc46b5fedf7ea
+  ISEmojiView: 3198116ef9f442857c3a69241b15e3ad7856f461
   Socket.IO-Client-Swift: 21e6a8a23a7d367d5ddfab6cbbd3c679cf3c25d6
   Starscream: ef3ece99d765eeccb67de105bfa143f929026cf5
 

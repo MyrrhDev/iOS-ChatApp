@@ -11,10 +11,10 @@
 		7902084A228EE73700BFA2AC /* HeaderCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79020849228EE73700BFA2AC /* HeaderCollectionView.swift */; };
 		7902084C228EFE8300BFA2AC /* FooterCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7902084B228EFE8300BFA2AC /* FooterCollectionView.swift */; };
 		79027372228ACAE70034225A /* ConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79027371228ACAE70034225A /* ConfigurationView.swift */; };
-		79027374228AD25B0034225A /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79027373228AD25B0034225A /* Configuration.swift */; };
 		79027376228AFC640034225A /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79027375228AFC640034225A /* RegisterView.swift */; };
 		79040627227AE2DF00F3E781 /* StarWeb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79040626227AE2DF00F3E781 /* StarWeb.swift */; };
 		79040629227B08F400F3E781 /* onlyclient.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 79040628227B08F400F3E781 /* onlyclient.p12 */; };
+		7905BD3C2297F025006773D7 /* EditProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7905BD3B2297F025006773D7 /* EditProfileView.swift */; };
 		7907012F228D798A005A3B96 /* InterestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7907012E228D798A005A3B96 /* InterestsView.swift */; };
 		79070131228D7AEB005A3B96 /* InterestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79070130228D7AEB005A3B96 /* InterestCell.swift */; };
 		790A0A0522857C9B005E8E1B /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790A0A0422857C9B005E8E1B /* InputView.swift */; };
@@ -83,10 +83,10 @@
 		79020849228EE73700BFA2AC /* HeaderCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderCollectionView.swift; sourceTree = "<group>"; };
 		7902084B228EFE8300BFA2AC /* FooterCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterCollectionView.swift; sourceTree = "<group>"; };
 		79027371228ACAE70034225A /* ConfigurationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurationView.swift; sourceTree = "<group>"; };
-		79027373228AD25B0034225A /* Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
 		79027375228AFC640034225A /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RegisterView.swift; path = ../Custom/RegisterView.swift; sourceTree = "<group>"; };
 		79040626227AE2DF00F3E781 /* StarWeb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarWeb.swift; sourceTree = "<group>"; };
 		79040628227B08F400F3E781 /* onlyclient.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = onlyclient.p12; sourceTree = "<group>"; };
+		7905BD3B2297F025006773D7 /* EditProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditProfileView.swift; sourceTree = "<group>"; };
 		7907012E228D798A005A3B96 /* InterestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterestsView.swift; sourceTree = "<group>"; };
 		79070130228D7AEB005A3B96 /* InterestCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterestCell.swift; sourceTree = "<group>"; };
 		790A0A0422857C9B005E8E1B /* InputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputView.swift; sourceTree = "<group>"; };
@@ -207,7 +207,6 @@
 				BB8ED1002278AEC4008E97E8 /* CustomTabBarController.swift */,
 				BB088FEF227F358600485F78 /* DateLabel.swift */,
 				790A0A0422857C9B005E8E1B /* InputView.swift */,
-				79027373228AD25B0034225A /* Configuration.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -269,13 +268,14 @@
 			isa = PBXGroup;
 			children = (
 				BB8ED1032278C5E1008E97E8 /* LoginController.swift */,
+				79027375228AFC640034225A /* RegisterView.swift */,
+				7907012E228D798A005A3B96 /* InterestsView.swift */,
 				BB1419D12278FADB00177A09 /* NewChatRooms.swift */,
 				797D1A84227C367600566AE0 /* NewGroupChatController.swift */,
 				BB486DA0227A29580001852E /* NewSingleChatController.swift */,
 				797D1A7E227C364700566AE0 /* NewUsersView.swift */,
-				79027375228AFC640034225A /* RegisterView.swift */,
 				79027371228ACAE70034225A /* ConfigurationView.swift */,
-				7907012E228D798A005A3B96 /* InterestsView.swift */,
+				7905BD3B2297F025006773D7 /* EditProfileView.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -593,6 +593,7 @@
 				BB1419BF2278C89900177A09 /* MessageCore+CoreDataProperties.swift in Sources */,
 				BB1419D22278FADB00177A09 /* NewChatRooms.swift in Sources */,
 				BB088FF3227F5D9E00485F78 /* MessageCell.swift in Sources */,
+				7905BD3C2297F025006773D7 /* EditProfileView.swift in Sources */,
 				792F7A36228041BE005FAB5C /* TableView Entension.swift in Sources */,
 				79027376228AFC640034225A /* RegisterView.swift in Sources */,
 				BB088FF0227F358600485F78 /* DateLabel.swift in Sources */,
@@ -603,7 +604,6 @@
 				BB1419AC2278C81600177A09 /* DataProvider.swift in Sources */,
 				BB1419AD2278C81600177A09 /* NetworkManager.swift in Sources */,
 				BB1419AB2278C81600177A09 /* DataRepository.swift in Sources */,
-				79027374228AD25B0034225A /* Configuration.swift in Sources */,
 				BB1419B22278C85900177A09 /* Date Extension.swift in Sources */,
 				BB1419C42278C89900177A09 /* IdsChattingUsers+CoreDataClass.swift in Sources */,
 				797D1A8D227C865600566AE0 /* SocketIOManager.swift in Sources */,
